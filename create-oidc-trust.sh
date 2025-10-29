@@ -9,9 +9,4 @@ APP_ID=5f55da87-40c6-4f6b-9fbb-f5b130a7d28a
 SUBJECT="repo:$ORG_NAME/$REPO_NAME:ref:refs/heads/$BRANCH_NAME"
 
 # Create the Federated Credential
-az ad app federated-credential create \
-  --id $APP_ID \
-  --name "GitHubOIDC-$REPO_NAME" \
-  --issuer "https://token.actions.githubusercontent.com" \
-  --subject $SUBJECT \
-  --audiences "api://AzureADTokenExchange"
+az ad app federated-credential create --id $APP_ID --parameters credentials.json
