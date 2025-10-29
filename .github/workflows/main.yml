@@ -1,0 +1,89 @@
+name: Deploy to Azure AKS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}
+  IMAGE_NAME: hello-world-app
+  TAG: ${{ github.sha }} # Use the commit SHA as the image tag
+  K8S_DEPLOYMENT_NAME: hello-world-deployment
+  K8S_NAMESPACE: default # Or your target namespace
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⚙️ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔐 Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 🔨 Build and Push Docker image to ACR
+        id: docker_build_push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.ACR_NAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          file: ./Dockerfile
+          # ACR authentication is handled by the azure/login action
+          # which uses the Azure Service Principal to securely log in.
+
+      - name: 📦 Set up Kubectl
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.AZURE_RG }}
+          cluster-name: ${{ secrets.AZURE_AKS_NAME }}
+          
+      - name: 🚀 Deploy to AKS
+        uses: azure/k8s-deploy@v4
+        with:
+          # Use a simple inline manifest for clarity
+          manifests: |
+            apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: ${{ env.K8S_DEPLOYMENT_NAME }}
+              labels:
+                app: hello-world
+            spec:
+              replicas: 2
+              selector:
+                matchLabels:
+                  app: hello-world
+              template:
+                metadata:
+                  labels:
+                    app: hello-world
+                spec:
+                  containers:
+                  - name: ${{ env.IMAGE_NAME }}
+                    image: ${{ env.ACR_NAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+                    ports:
+                    - containerPort: 8080
+          images: |
+            ${{ env.ACR_NAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+
+      - name: 🌟 Create/Update Service (Expose the deployment)
+        run: |
+          kubectl apply -f - <<EOF
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: hello-world-service
+          spec:
+            selector:
+              app: hello-world
+            ports:
+              - protocol: TCP
+                port: 80
+                targetPort: 8080
+            type: LoadBalancer # Creates an Azure Load Balancer
+          EOF
