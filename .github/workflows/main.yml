@@ -34,12 +34,15 @@ jobs:
 
       - name: 🔨 Build and Push Docker image to ACR
         id: docker_build_push
-        uses: docker/build-push-action@v5
+        uses: azure/docker-login@v1
         with:
-          context: .
-          push: true
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
           tags: ${{ env.ACR_NAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
-          file: ./Dockerfile
+      - run: |
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           # ACR authentication is handled by the azure/login action
           # which uses the Azure Service Principal to securely log in.
 
