@@ -6,10 +6,6 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  id-token: write # Required to fetch the OIDC token
-  contents: read  # Required to check out the code
-
 env:
   ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}
   IMAGE_NAME: images/hello-world-app
@@ -21,6 +17,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      id-token: write # Required to fetch the OIDC token
+      contents: read  # Required to check out the code
     steps:
       - name: ⚙️ Checkout repository
         uses: actions/checkout@v4
@@ -34,7 +33,6 @@ jobs:
 
       - name: 🔨 Build and Push Docker image to ACR
         run: |
-          az login
           az acr login --name ${{ secrets.AZURE_ACR_NAME }}
           docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
