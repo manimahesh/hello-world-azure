@@ -11,7 +11,7 @@ permissions:
   contents: read  # Required to check out the code
 
 env:
-  ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}
+  ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}/images
   IMAGE_NAME: hello-world-app
   TAG: ${{ github.sha }} # Use the commit SHA as the image tag
   K8S_DEPLOYMENT_NAME: hello-world-deployment
