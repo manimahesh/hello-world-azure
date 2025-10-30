@@ -11,8 +11,8 @@ permissions:
   contents: read  # Required to check out the code
 
 env:
-  ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}/images
-  IMAGE_NAME: hello-world-app
+  ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}
+  IMAGE_NAME: images/hello-world-app
   TAG: ${{ github.sha }} # Use the commit SHA as the image tag
   K8S_DEPLOYMENT_NAME: hello-world-deployment
   K8S_NAMESPACE: default # Or your target namespace
@@ -39,7 +39,6 @@ jobs:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-          tags: ${{ env.ACR_NAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
       - run: |
           docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
