@@ -1,5 +1,5 @@
 # 1. Create the App Registration
-APP_NAME="GitHubActions-OIDC-SP"
+APP_NAME="mmani-GitHubActions-OIDC"
 APP_ID=$(az ad app create --display-name $APP_NAME --query appId --output tsv)
 
 # 2. Create the Service Principal
