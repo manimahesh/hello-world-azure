@@ -34,6 +34,7 @@ jobs:
 
       - name: 🔨 Build and Push Docker image to ACR
         run: |
+          az login
           az acr login --name ${{ secrets.AZURE_ACR_NAME }}
           docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
