@@ -2,5 +2,10 @@
 important.txt
 entrypoint.sh
 build-gh-actions-runner.sh
-*.sh
 create-acr.sh
+create-oidc-trust.sh
+Dockerfile.github
+assign-role.sh
+authorize-acr.sh
+authorize-aks.sh
+register-app.sh
