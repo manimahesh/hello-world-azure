@@ -23,18 +23,10 @@ jobs:
         run: |
           az account set --subscription "mmani-ovcp2-sub-torque"
 
-      - name: Build and deploy Container App
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          appSourcePath: ${{ github.workspace }}
-          acrName: mmaniacr
-          containerAppName: helloworldapp
-          resourceGroup: mmani-azure-resource-group
-
-#      - name: Trigger ACR Task
-#        run: |
-#          az acr task run \
-#            --registry mmaniacr \
-#            --resource-group mmani-azure-resource-group \
-#            --name build-task 
+      - name: Trigger ACR Task
+        run: |
+          az acr task run \
+            --registry mmaniacr \
+            --resource-group mmani-azure-resource-group \
+            --name build-task 
 
