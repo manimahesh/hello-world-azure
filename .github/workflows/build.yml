@@ -17,5 +17,5 @@ jobs:
       - name: Trigger ACR Task
         run: |
           az acr task run \
-            --registry mmaniecr \
+            --registry mmaniacr \
             --name build-task
