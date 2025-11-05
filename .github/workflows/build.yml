@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: ⚙️ Checkout repository
+        uses: actions/checkout@v4
+
       # 1. Authenticate to Azure using your Service Principal
       - name: Azure Login
         uses: azure/login@v2
