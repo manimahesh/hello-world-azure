@@ -1,4 +1,4 @@
-ACR_NAME="mmaniecr" # <<< MUST BE UNIQUE
+ACR_NAME="mmaniacr" # <<< MUST BE UNIQUE
 RESOURCE_GROUP="mmani-azure-resource-group"
 
 az acr create \

@@ -24,4 +24,5 @@ jobs:
         run: |
           az acr task run \
             --registry mmaniacr \
-            --name build-task
+            --resource-group mmani-azure-resource-group \
+            --name build-task 

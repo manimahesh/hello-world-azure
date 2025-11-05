@@ -3,3 +3,4 @@ important.txt
 entrypoint.sh
 build-gh-actions-runner.sh
 *.sh
+create-acr.sh
